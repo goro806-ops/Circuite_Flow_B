@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tenant {
+  tenantId      String           @id @default(uuid())
+  companyName   String           @db.VarChar(255)
+  planTier      String           @default("pro")
+  createdAt     DateTime         @default(now())
+  projects      HardwareProject[]
+}
+
+model HardwareProject {
+  projectId     String           @id @default(uuid())
+  tenantId      String
+  tenant        Tenant           @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
+  projectName   String           @db.VarChar(255)
+  edaFormat     String           @default("kicad")
+  bomData       Json?
+  status        String           @default("draft")
+  createdAt     DateTime         @default(now())
+
+  @@index([tenantId])
+}
