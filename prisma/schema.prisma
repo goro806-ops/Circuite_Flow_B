@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -9,7 +9,7 @@ generator client {
 
 model Tenant {
   tenantId      String           @id @default(uuid())
-  companyName   String           @db.VarChar(255)
+  companyName   String           
   planTier      String           @default("pro")
   createdAt     DateTime         @default(now())
   projects      HardwareProject[]
@@ -19,7 +19,7 @@ model HardwareProject {
   projectId     String           @id @default(uuid())
   tenantId      String
   tenant        Tenant           @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
-  projectName   String           @db.VarChar(255)
+  projectName   String           
   edaFormat     String           @default("kicad")
   bomData       String?
   status        String           @default("draft")
