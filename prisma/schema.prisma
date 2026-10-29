@@ -21,7 +21,7 @@ model HardwareProject {
   tenant        Tenant           @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
   projectName   String           @db.VarChar(255)
   edaFormat     String           @default("kicad")
-  bomData       Json?
+  bomData       String?
   status        String           @default("draft")
   createdAt     DateTime         @default(now())
 
