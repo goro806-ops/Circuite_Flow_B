@@ -1,0 +1,42 @@
+name: Live Database Verification & Project Build Sync
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'web-portal/package.json'
+
+    - name: Install Prisma CLI & Client
+      run: npm install -g prisma
+
+    - name: Install Application Dependencies
+      run: cd web-portal && npm install
+
+    - name: Verify Schema & Database Connection
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        if [ -n "$DATABASE_URL" ]; then
+          echo "DATABASE_URL is set! Pushing database migrations..."
+          npx prisma db push --schema=prisma/schema.prisma
+        else
+          echo "DATABASE_URL secret is not configured yet. Skipping live sync check..."
+          npx prisma validate --schema=prisma/schema.prisma
+        fi
