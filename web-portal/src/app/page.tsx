@@ -1,4 +1,4 @@
-import BOMOptimizerDashboard from '../../components/BOMOptimizerDashboard';
+import BOMOptimizerDashboard from '../components/BOMOptimizerDashboard';
 
 export default function HomePage() {
   return (
